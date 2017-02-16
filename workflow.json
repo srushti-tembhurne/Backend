@@ -1,4 +1,4 @@
-[
+
     {
         "name":"CREATE_VM",
         "title":"Create new VM and Power it On",
@@ -7,6 +7,7 @@
         "start_task":"CREATE_VM",
         "end_task":"POWER_ON_VM",
         "kill_task":"",
+        "current_task":"",
         "parameters":[
             {
                 "name":"vmName",
@@ -155,5 +156,3 @@
         "modified_by":""
 
     }
-
-]

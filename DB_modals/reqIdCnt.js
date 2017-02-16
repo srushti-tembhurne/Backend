@@ -1,11 +1,10 @@
-var mongoose = require( 'mongoose' );
+var mongoose = require('mongoose');
 
-var ReqIDCnt = new mongoose.Schema({
-  prefix: { type: String, required: true},
-  count:  { type: Number, required: true,index: { unique: true } }
+var CounterSchema = new mongoose.Schema({
+    _id: { type: String, required: true },
+    seq: { type: Number, default: 0 }
 });
- 
 
 
 
-module.exports = mongoose.model('reqCnt', ReqIDCnt);
+module.exports = mongoose.model('counter', CounterSchema);
