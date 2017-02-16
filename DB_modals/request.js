@@ -8,6 +8,7 @@ var CounterSchema = new mongoose.Schema({
 
 var reqSchema = new mongoose.Schema({
     id: { type: String, index: { unique: true } },
+    jobID: { type: String },
     user: String,
     data: [],
     type: { type: String, required: true },

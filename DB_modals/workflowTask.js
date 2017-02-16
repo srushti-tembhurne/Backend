@@ -5,6 +5,7 @@ const counter = require('./reqIdCnt');
 
 var jobSchema = new mongoose.Schema({
   jobID: { type: String, index: { unique: true } },
+  reqID: { type: String },
   name: { type: String, default: 'CREATE_VM' },
   title: { type: String, default: 'Create new VM and Power it On' },
   description: { type: String, default: 'This process creates new VM. It also power on the newly created VM' },
@@ -16,9 +17,9 @@ var jobSchema = new mongoose.Schema({
   modified_on: { type: String },
   created_by: { type: String },
   modified_by: { type: String },
-  parameters: [],
-  parameter_mappings: [],
-  tasks: [],
+  parameters: {},
+  parameter_mappings: {},
+  tasks: {},
   global_paramters: []
 })
 

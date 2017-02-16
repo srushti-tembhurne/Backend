@@ -29,14 +29,15 @@ function createReq(req, res, next) {
         if (reqType == 'create-vm') {
 
             const worflowJson = require('../../workflow')
-            var paramArray = worflowJson.parameters
-            verifyAndMapParameters(req, paramArray, cb)
-
+            var paramhash = worflowJson.parameters
+            verifyAndMapParameters(req, paramhash, cb)
+            var Req_id;
             function cb(err, userReq, callback) {
                 if (err) {
                     console.log('res false')
                     res.status(200).send({ result: err, success: false })
                 } else {
+                    Req_id = userReq.id
                     console.log('res success')
                     res.status(200).send({ result: 'Request saved', state: 'processing', data: userReq, success: true })
                     // wfMng.execute()
@@ -47,29 +48,38 @@ function createReq(req, res, next) {
                 newJob.current_task = 'START'
                 newJob.created_on = now().format('lll')
                 newJob.created_by = req.body.username
-                newJob.parameters = paramArray
+                newJob.parameters = paramhash
+                newJob.parameter_mappings = worflowJson.parameter_mappings
                 newJob.tasks = worflowJson.tasks
+                newJob.reqID = Req_id
                 newJob.save(function (err, savedJob) {
                     if (err) {
                         console.log("Error while creating Job")
                     } else {
 
-                        wfMng.execute(savedJob.jobID)
+                        wfMng.execute(savedJob.jobID, reqCallback)
                     }
 
                 })
             }
 
-            process.nextTick(
-                mapSaveWfParam
-            )
+
+            // process.nextTick(
+            //     mapSaveWfParam
+            // )
+            setTimeout(mapSaveWfParam, 2000);
         }
 
     }
 
 }
-
-function populateTask(worflowJson) {
+function reqCallback(err, jobToUpdate) {
+    if (err) {
+        console.log(err)
+    }
+    else {
+        console.log(jobToUpdate)
+    }
 
 }
 
@@ -80,17 +90,30 @@ function verifyAndMapParameters(parameter, paramJson, cb) {
     var data = []
 
     var tempHashData = {}
-    paramJson.some(function (element) {
-        paramName = element.name
-        if (element.isrequired && !parameter.body[paramName]) {
+    console.log(paramJson)
+    Object.keys(paramJson).some(function (key) {
+        paramName = key
+        if (paramJson[key].isrequired && !parameter.body[paramName]) {
             missingParam = true
             return missingParam
         } else {
-            element.value = parameter.body[paramName]
+            paramJson[key].value = parameter.body[paramName]
             tempHashData[paramName] = parameter.body[paramName]
-
         }
-    })
+    });
+    console.log(paramJson)
+
+    // paramJson.some(function (element) {
+    //     paramName = element.name
+    //     if (element.isrequired && !parameter.body[paramName]) {
+    //         missingParam = true
+    //         return missingParam
+    //     } else {
+    //         element.value = parameter.body[paramName]
+    //         tempHashData[paramName] = parameter.body[paramName]
+
+    //     }
+    // })
     if (missingParam) {
         cb("Error Missing parameter" + paramName)
 
