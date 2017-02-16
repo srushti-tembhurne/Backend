@@ -7,7 +7,7 @@ const envVarsSchema = joi.object({
 }).unknown()
   .required()
 
-const { error, value: envVars } = joi.validate(({MONGO_URI:'mongodb://localhost/DCMF'}), envVarsSchema)
+const { error, value: envVars } = joi.validate(({ MONGO_URI: 'mongodb://172.17.163.56/DCMF' }), envVarsSchema)
 if (error) {
   throw new Error(`Config validation error: ${error.message}`)
 }
