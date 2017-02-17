@@ -102,28 +102,28 @@
             "from": "START",
             "input_params": {
                 "vmName": {
-                    "value": "",
+                    "value": "testing",
                     "type": "string"
                 },
                 "cpuCore": {
                     "name": "cpuCore",
-                    "value": "",
+                    "value": "2",
                     "type": "number"
                 },
                 "diskSize": {
                     "name": "diskSize",
-                    "value": "",
+                    "value": "50",
                     "type": "number"
                 },
                 "Memory": {
                     "name": "Memory",
-                    "value": "",
+                    "value": "512",
                     "type": "number"
                 },
-                "OS": {
-                    "name": "OS",
-                    "value": "",
-                    "type": "number"
+                "os": {
+                    "name": "os",
+                    "value": "ubuntu-14.04.1-server-amd64.iso",
+                    "type": "string"
                 }
             },
             "output_params": {

@@ -16,20 +16,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 var proxmoxLoginDetails = {};
 var createVMObj = {};
+
 var proxmox_config = require('../proxmox_config');
 
-function genericCallback(message) {
-    console.log(message);
-    return message;
-}
 
 function createvm(taskObject, callback) {
-    createVMObj.vmName = taskObject['name'];
+    createVMObj.vmName = taskObject['vmName'];
     createVMObj.ostype = "other";
-    createVMObj.ide2 = 'local:iso/'+taskObject['os']+',media=cdrom';
-    createVMObj.ide0 = "local:" + taskObject['size'] + ",format=qcow2";
-    createVMObj.cores = taskObject['cores'];
-    createVMObj.memory = taskObject['memory'];
+    createVMObj.ide2 = 'local:iso/' + taskObject['os'] + ',media=cdrom';
+    createVMObj.ide0 = "local:" + taskObject['diskSize'] + ",format=qcow2";
+    createVMObj.cores = taskObject['cpuCore'];
+    createVMObj.memory = taskObject['Memory'];
+    createVMObj.taskid = taskObject['taskID'];
     try {
         net.createConnection(proxmox_config.port, proxmox_config.host).on("connect", function (e) {
             console.log("192.168.208.130 is pingable ");
@@ -56,10 +54,11 @@ function createvm(taskObject, callback) {
                     var _response = JSON.parse(body);
                     proxmoxLoginDetails.CSRFPreventionToken = _response.data.CSRFPreventionToken;
                     proxmoxLoginDetails.ticket = _response.data.ticket;
-                    getNextVMIDandNode(genericCallback);
+                    getNextVMIDandNode(callback);
                 } else {
                     var data = {};
                     data.status = false;
+                    data.taskid = createVMObj.taskid;
                     data.StatusMessage = response.statusMessage;
                     callback(data);
                 }
@@ -67,12 +66,14 @@ function createvm(taskObject, callback) {
         }).on("error", function (e) {
             var data = {};
             data.status = false;
+            data.taskid = createVMObj.taskid
             data.StatusMessage = "Error: Proxmox server is not reachable.";
             callback(data)
         });
     } catch (error) {
         var data = {};
         data.status = false;
+        data.taskid = createVMObj.taskid
         data.StatusMessage = "Error in testport";
         callback(data)
     }
@@ -152,6 +153,7 @@ var getNextVMIDandNode = function (callback) {
             if (error) {
                 var error = {};
                 error.status = false;
+                error.taskid = createVMObj.taskid
                 error.StatusMessage = "Internal Server error."
                 callback(error);
                 return;
@@ -159,14 +161,14 @@ var getNextVMIDandNode = function (callback) {
                 createVMObj.vmid = results[0].data;
                 createVMObj.nodeName = results[1].data[0].node;
                 console.log(JSON.stringify(createVMObj));
+
                 //Create vm
-                console.log("Calling createVM()" + createVMObj.vmName);
-               
                 if (createVMObj.vmid != '' && createVMObj.nodeName != '') {
-                    createVMOnProxmox(genericCallback);
+                    createVMOnProxmox(callback);
                 } else {
                     var error = {};
                     error.status = false;
+                    error.taskid = createVMObj.taskid
                     error.StatusMessage = "Internal Server error."
                     callback(error);
                 }
@@ -203,11 +205,13 @@ function createVMOnProxmox(callback) {
                 var _response = JSON.parse(body);
                 _response.status = true;
                 _response.vmid = createVMObj.vmid;
+                _response.taskid = createVMObj.taskid
                 _response.node = createVMObj.nodeName;
                 callback(_response);
             } else {
                 var error = {};
-                error.status = true;
+                error.status = false;
+                error.taskid = createVMObj.taskid
                 error.StatusMessage = response.statusMessage
                 callback(error);
             }
@@ -216,8 +220,9 @@ function createVMOnProxmox(callback) {
     } catch (error) {
         var error = {};
         error.status = false;
+        error.taskid = createVMObj.taskid
         error.StatusMessage = "Error in testport"
-        callback(_response);
+        callback(error);
     }
 }
 
