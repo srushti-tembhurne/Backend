@@ -118,11 +118,6 @@ function reqCallback(err, jobToUpdate) {
         console.log(err)
     }
     else {
-        console.log("ReqId = " + jobToUpdate.job.reqID)
-
-        // request.findOneAndUpdate(id, jobToUpdate.job.reqID, { status: "complete" })
-        //     .then((result) => { console.log("req Uodated =" + result) })
-        //     .catch((err) => { console.log("error occured = " + err) })
         request.findOne({ id: jobToUpdate.job.reqID })
             .then((data) => {
                 data.update({ status: "complete" }, (err, reqsaved) => {
@@ -135,7 +130,6 @@ function reqCallback(err, jobToUpdate) {
                 })
             })
             .catch((err) => { console.log(err) })
-        // console.log(jobToUpdate)
     }
 
 }

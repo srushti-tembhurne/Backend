@@ -3,8 +3,10 @@
 const wfJob = require('../../DB_modals/workflowTask')
 const Task = require('../../DB_modals/task')
 const now = require('moment')
+var testfunc = '';
 
 function execute(wfJobID, reqCB) {
+    testfunc = reqCB;
     getWfJobfromDB(wfJobID, reqCB)
 }
 
@@ -69,12 +71,14 @@ function saveTaskinDB(taskdata, wfRef, cb) {
             console.log('error' + error)
             //if error while saving task 
         })
+}
 
-
+function wfCallback() {
+    testfunc('test');
 }
 
 function updateJobDetails(jobToSave, nextTask, cb) {
-
+    // wfCallback()
     jobToSave.update({ current_task: nextTask }, function (err, result) {
         if (err) {
             return err
