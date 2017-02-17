@@ -1,158 +1,158 @@
-
-    {
-        "name":"CREATE_VM",
-        "title":"Create new VM and Power it On",
-        "description":"This process creates new VM. It also power on the newly created VM",
-        "version":1,
-        "start_task":"CREATE_VM",
-        "end_task":"POWER_ON_VM",
-        "kill_task":"",
-        "current_task":"",
-        "parameters":[
+{
+    "name": "CREATE_VM",
+    "title": "Create new VM and Power it On",
+    "description": "This process creates new VM. It also power on the newly created VM",
+    "version": 1,
+    "start_task": "CREATE_VM",
+    "end_task": "POWER_ON_VM",
+    "kill_task": "",
+    "current_task": "",
+    "parameters": {
+        "vmName": {
+            "value": "",
+            "type": "string",
+            "default": "",
+            "isrequired": true
+        },
+        "cpuCore": {
+            "value": "",
+            "type": "number",
+            "default": "",
+            "isrequired": true
+        },
+        "diskSize": {
+            "name": "diskSize",
+            "value": "",
+            "type": "number",
+            "default": "",
+            "isrequired": true
+        },
+        "Memory": {
+            "name": "Memory",
+            "value": "",
+            "type": "number",
+            "default": "",
+            "isrequired": true
+        }
+    },
+    "global_paramters": [
+        {
+            "name": "global_counter",
+            "value": "0",
+            "type": "number",
+            "default": "",
+            "isrequired": false
+        }
+    ],
+    "parameter_mappings": {
+        "CREATE_VM": [
             {
-                "name":"vmName",
-                "value":"",
-                "type":"string",
-                "default":"",
-                "isrequired":true
+                "from": "workflow",
+                "fronParameter": "vmName",
+                "to": "vmName"
             },
             {
-                "name":"cpuCore",
-                "value":"",
-                "type":"number",
-                "default":"",
-                "isrequired":true
+                "from": "workflow",
+                "fronParameter": "cpuCore",
+                "to": "cpuCore"
             },
             {
-                "name":"diskSize",
-                "value":"",
-                "type":"number",
-                "default":"",
-                "isrequired":true
+                "from": "workflow",
+                "fronParameter": "diskSize",
+                "to": "diskSize"
             },
             {
-                "name":"Memory",
-                "value":"",
-                "type":"number",
-                "default":"",
-                "isrequired":true
+                "from": "workflow",
+                "fronParameter": "Memory",
+                "to": "Memory"
             }
-        ],
-        "global_paramters":[
-            {
-                "name":"global_counter",
-                "value":"0",
-                "type":"number",
-                "default":"",
-                "isrequired":false
-            }
-        ],
-        "parameter_mappings":[
-            {
-                "from":{
-                    "task":"workflow",
-                    "parameter":"vm_name"
+        ]
+    },
+    "tasks": {
+        "CREATE_VM": {
+            "id": "1",
+            "name": "CREATE_VM",
+            "type": "action",
+            "module": "vm-creator",
+            "icon": "",
+            "input_params": {
+                "vmName": {
+                    "value": "",
+                    "type": "string"
                 },
-                "to":{
-                    "task":"1",
-                    "parameter":"vmName"
+                "cpuCore": {
+                    "name": "cpuCore",
+                    "value": "",
+                    "type": "number"
+                },
+                "diskSize": {
+                    "name": "diskSize",
+                    "value": "",
+                    "type": "number"
+                },
+                "Memory": {
+                    "name": "Memory",
+                    "value": "",
+                    "type": "number"
                 }
             },
-            {
-                "from":{
-                    "task":"workflow",
-                    "parameter":"number_of_cores"
+            "output_params": {
+                "vmID": {
+                    "value": "",
+                    "type": "string"
                 },
-                "to":{
-                    "task":"1",
-                    "parameter":"vmCore"
+                "vmNode": {
+                    "value": "",
+                    "type": "string"
                 }
             },
-            {
-                "from":{
-                    "task":"1",
-                    "parameter":"vmID"
-                },
-                "to":{
-                    "task":"5",
-                    "parameter":"vmid"
+            "ok": "5",
+            "error": "4",
+            "to": "POWERON_VM",
+            "state": "prepared|running|succeeded|suspended|killed|failed"
+        },
+        "START": {
+            "id": "2",
+            "name": "START",
+            "type": "flow",
+            "icon": "",
+            "to": "CREATE_VM"
+        },
+        "END": {
+            "id": "3",
+            "name": "END",
+            "type": "flow",
+            "icon": ""
+        },
+        "KILL": {
+            "id": "4",
+            "name": "KILL",
+            "type": "flow",
+            "icon": "",
+            "message": ""
+        },
+        "POWERON_VM": {
+            "id": "5",
+            "name": "POWERON_VM",
+            "type": "action",
+            "icon": "",
+            "module": "vm-poweron",
+            "input_params": [
+                {
+                    "name": "vmid",
+                    "value": "",
+                    "type": "string"
                 }
-            }
-        ],
-
-        "tasks":[
-            {
-                "id":"1",
-                "name":"CREATE_VM",
-                "type":"action",
-                "module":"vm-creator",
-                "icon":"",
-                "input_params":[
-                    {
-                        "name":"vmName",
-                        "value":"",
-                        "type":"string"
-                    },
-                    {
-                        "name":"vmCore",
-                        "value":"",
-                        "type":"number"
-                    }
-                ],
-                "output_params":[
-                    {
-                        "name":"vmID",
-                        "value":"",
-                        "type":"string"
-                    }
-                ],
-                "ok":"5",
-                "error":"4",
-                "state":"prepared|running|succeeded|suspended|killed|failed"
-            },
-            {
-                "id":"2",
-                "name":"START",
-                "type":"flow",
-                "icon":"",
-                "to":"1"
-            },
-            {
-                "id":"3",
-                "name":"END",
-                "type":"flow",
-                "icon":""
-            },
-            {
-                "id":"4",
-                "name":"KILL",
-                "type":"flow",
-                "icon":"",
-                "message":""
-            },
-            {
-                "id":"5",
-                "name":"POWERON_VM",
-                "type":"action",
-                "icon":"",
-                "module":"vm-poweron",
-                "input_params":[
-                    {
-                        "name":"vmid",
-                        "value":"",
-                        "type":"string"
-                    }
-                ],
-                "output_params":[
-                ],
-                "ok":"3",
-                "error":"4",
-                "state":"prepared|running|succeeded|suspended|killed|failed"
-            }
-        ],
-        "created_on":"",
-        "modified_on":"",
-        "created_by":"",
-        "modified_by":""
-
-    }
+            ],
+            "output_params": [],
+            "ok": "3",
+            "error": "4",
+            "to": "END",
+            "state": "prepared|running|succeeded|suspended|killed|failed"
+        }
+    },
+    "created_on": "",
+    "modified_on": "",
+    "created_by": "",
+    "modified_by": ""
+}
