@@ -3,6 +3,7 @@
 const wfJob = require('../../DB_modals/workflowTask')
 const Task = require('../../DB_modals/task')
 const now = require('moment')
+const taskMng = require('../taskManager')
 var testfunc = '';
 
 function execute(wfJobID, reqCB) {
@@ -64,7 +65,7 @@ function saveTaskinDB(taskdata, wfRef, cb) {
 
     newTask.save()
         .then((result) => {
-            updateJobDetails(wfRef.jobID, taskdata.to, cb)
+            taskMng.taskExecuer(result.taskID, wfCallback)
         })
         .catch((error) => {
             console.log('error' + error)
@@ -74,10 +75,34 @@ function saveTaskinDB(taskdata, wfRef, cb) {
 
 function wfCallback(err, taskID) {
     if (err) {
-
-    } else {
+        console.log('Error occured' + err)
+    }
+    else {
         Task.findOne({ taskID: taskID })
-            .then((data) => { updateJobDetails(data.wfID, data.to, testfunc) })
+            .then((data) => {
+                wfJob.findOne({ jobID: data.wfID }, (err, result) => {
+                    if (err) {
+                        console.log(err)
+                    }
+                    else {
+                        var jobPromise = new Promise((resolve, reject) => {
+                            result.tasks[data.name] = data
+                            wfJob.update({ _id: result._id }, result, (err, jobData) => {
+                                if (err) {
+                                    reject(err)
+                                }
+                                else {
+                                    resolve({ ID: result.jobID, to: data.to })
+                                }
+                            })
+                        })
+                            .then((data) => {
+                                updateJobDetails(data.ID, data.to, testfunc)
+                            })
+                    }
+                })
+
+            })
             .catch((err) => { console.log(err) })
     }
 }

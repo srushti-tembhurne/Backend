@@ -19,8 +19,9 @@ function genericCallback(message) {
 }
 
 function poweronvm(taskObject, callback) {
-    vmObj.nodeName = taskObject['node']
+    vmObj.nodeName = taskObject['vmNode']
     vmObj.vmid = taskObject['vmid']
+    vmObj.taskid = taskObject['taskID']
     try {
         net.createConnection(proxmox_config.port, proxmox_config.host).on("connect", function (e) {
             console.log("192.168.208.130 is pingable ");
@@ -47,10 +48,12 @@ function poweronvm(taskObject, callback) {
                     var _response = JSON.parse(body);
                     proxmoxLoginDetails.CSRFPreventionToken = _response.data.CSRFPreventionToken;
                     proxmoxLoginDetails.ticket = _response.data.ticket;
-                    poweron(genericCallback);
+                    //poweron(genericCallback);
+                    poweron(callback);
                 } else {
                     var data = {};
                     data.status = false;
+                    data.taskid = vmObj.taskid;
                     data.StatusMessage = response.statusMessage;
                     callback(data);
                 }
@@ -58,12 +61,14 @@ function poweronvm(taskObject, callback) {
         }).on("error", function (e) {
             var data = {};
             data.status = false;
+            data.taskid = vmObj.taskid;
             data.StatusMessage = "Error: Proxmox server is not reachable.";
             callback(data)
         });
     } catch (error) {
         var data = {};
         data.status = false;
+        data.taskid = vmObj.taskid;
         data.StatusMessage = "Error in testport";
         callback(data)
     }
@@ -84,7 +89,7 @@ function poweron(callback) {
 
         // Configure the request
         options = {
-            url: proxmox_config.baseurl + '/nodes/' + vmObj.nodeName + '/qemu/'+vmObj.vmid+'/status/start',
+            url: proxmox_config.baseurl + '/nodes/' + vmObj.nodeName + '/qemu/' + vmObj.vmid + '/status/start',
             method: 'POST',
             headers: headers,
             rejectUnauthorized: false
@@ -95,10 +100,12 @@ function poweron(callback) {
             if (!error && response.statusCode == 200) {
                 var _response = JSON.parse(body);
                 _response.status = true;
+                _response.taskid = vmObj.taskid;
                 callback(_response);
             } else {
                 var error = {};
                 error.status = true;
+                error.taskid = vmObj.taskid;
                 error.StatusMessage = response.statusMessage
                 callback(error);
             }
@@ -107,6 +114,7 @@ function poweron(callback) {
     } catch (error) {
         var error = {};
         error.status = false;
+        error.taskid = vmObj.taskid;
         error.StatusMessage = "Error in testport"
         callback(_response);
     }
