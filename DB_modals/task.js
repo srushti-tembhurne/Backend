@@ -8,13 +8,15 @@ var taskSchema = new mongoose.Schema({
     name: { type: String },
     module: { type: String },
     icon: { type: String },
-    input_params: [],
+    input_params: {},
     state: { type: String, default: 'prepared' },
     ok: { type: Number, default: 5 },
     error: { type: Number, default: 4 },
     modified_on: { type: String },
+    created_on: { type: String },
     to: { type: String },
-    output_params: []
+    wfID: { type: Number, required: true },
+    output_params: {}
 })
 
 

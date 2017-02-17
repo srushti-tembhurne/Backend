@@ -2,7 +2,7 @@
 
 const wfJob = require('../../DB_modals/workflowTask')
 const Task = require('../../DB_modals/task')
-
+const now = require('moment')
 
 function execute(wfJobID, reqCB) {
     getWfJobfromDB(wfJobID, reqCB)
@@ -11,10 +11,7 @@ function execute(wfJobID, reqCB) {
 
 
 function getWfJobfromDB(jobIDtosearch, callback) {
-    wfJob.findOne({ jobID: jobIDtosearch }, function (err, dbWfJob) {
-        if (err) { return err }
-        else { return dbWfJob }
-    })
+    wfJob.findOne({ jobID: jobIDtosearch })
         .then((data) => { mappParameters(data, callback) })
         .catch((err) => { callback(err) })
 }
@@ -22,8 +19,7 @@ function getWfJobfromDB(jobIDtosearch, callback) {
 function mappParameters(job, callback) {
     let currentTask = job.current_task;
     let task = job.tasks[currentTask]
-    // let mapArray = job.parameter_mappings[currentTask];
-    console.log("currentTask " + currentTask + "taskType" + task.type)
+
     if (task.type == 'flow') {
         // job
         job.current_task = task.to;
@@ -36,30 +32,36 @@ function mappParameters(job, callback) {
 
 
 function paramMapper(taskRef, jobRef) {
-    dataHash = {}
+
     let arrayToMap = jobRef.parameter_mappings[jobRef.current_task]
     arrayToMap.some(function (element) {
         if (element.from == 'workflow') {
-            // dataHash["name"] jobRef[element.fronParameter]
+            taskRef.input_params[element.to].value = jobRef.parameters[element.fronParameter].value
         }
     })
+
+    let returnval = saveTaskinDB(taskRef, jobRef.jobID)
 }
 
-function saveTaskinDB() {
+function saveTaskinDB(taskdata, wfID) {
+    let newTask = new Task()
+    newTask.name = taskdata.name
+    newTask.module = taskdata.module
+    newTask.icon = taskdata.icon
+    newTask.input_params = taskdata.input_params
+    newTask.created_on = now().format('lll')
+    newTask.output_params = taskdata.output_params
+    newTask.to = taskdata.to
+    newTask.wfID = wfID
+
+    newTask.save()
+        .then((result) => { console.log('result' + result) })
+        .catch((error) => { console.log('error' + error) })
 
 }
 
 function updateJobDetails(jobToSave, nextTask, cb) {
-    // wfJob.findOneAndUpdate({ jobID: jobToSave.jobID }, { current_task: nextTask }, function (err, updateJobDetails) {
-    //     if (err) {
-    //         return err
-    //     }
-    //     else {
-    //         returnupdateJobDetails
-    //     }
-    // })
-    //     .then((result) => { execute(jobToSave.jobID, cb) })
-    //     .catch((err) => { console.log(err) })
+
     jobToSave.update({ current_task: nextTask }, function (err, result) {
         if (err) {
             return err

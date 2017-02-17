@@ -5,8 +5,7 @@ const reqID = require('../../DB_modals/reqIdCnt')
 const wfMng = require('../workflowManager')
 var mongoose = require('mongoose')
 var now = require('moment')
-// const promisify = require('es6-promisify')
-// const wfManager = promisify(wfMng.execute, wfMng)
+
 
 //TODO
 // verify req parameter 
@@ -34,13 +33,11 @@ function createReq(req, res, next) {
             var Req_id;
             function cb(err, userReq, callback) {
                 if (err) {
-                    console.log('res false')
+
                     res.status(200).send({ result: err, success: false })
                 } else {
                     Req_id = userReq.id
-                    console.log('res success')
                     res.status(200).send({ result: 'Request saved', state: 'processing', data: userReq, success: true })
-                    // wfMng.execute()
                 }
             }
             function mapSaveWfParam() {
@@ -90,7 +87,7 @@ function verifyAndMapParameters(parameter, paramJson, cb) {
     var data = []
 
     var tempHashData = {}
-    console.log(paramJson)
+
     Object.keys(paramJson).some(function (key) {
         paramName = key
         if (paramJson[key].isrequired && !parameter.body[paramName]) {
@@ -101,19 +98,6 @@ function verifyAndMapParameters(parameter, paramJson, cb) {
             tempHashData[paramName] = parameter.body[paramName]
         }
     });
-    console.log(paramJson)
-
-    // paramJson.some(function (element) {
-    //     paramName = element.name
-    //     if (element.isrequired && !parameter.body[paramName]) {
-    //         missingParam = true
-    //         return missingParam
-    //     } else {
-    //         element.value = parameter.body[paramName]
-    //         tempHashData[paramName] = parameter.body[paramName]
-
-    //     }
-    // })
     if (missingParam) {
         cb("Error Missing parameter" + paramName)
 
