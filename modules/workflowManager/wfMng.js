@@ -27,7 +27,7 @@ function mappParameters(job, callback) {
             callback(null, { job: job, status: "completed" })
         }
         else {
-            updateJobDetails(job, task.to, callback) //to update the current task of WorkFlow
+            updateJobDetails(job.jobID, task.to, callback) //to update the current task of WorkFlow
         }
 
     } else {
@@ -64,8 +64,7 @@ function saveTaskinDB(taskdata, wfRef, cb) {
 
     newTask.save()
         .then((result) => {
-            updateJobDetails(wfRef, taskdata.to, cb)
-            return result;
+            updateJobDetails(wfRef.jobID, taskdata.to, cb)
         })
         .catch((error) => {
             console.log('error' + error)
@@ -73,20 +72,43 @@ function saveTaskinDB(taskdata, wfRef, cb) {
         })
 }
 
-function wfCallback() {
-    testfunc('test');
+function wfCallback(err, taskID) {
+    if (err) {
+
+    } else {
+        Task.findOne({ taskID: taskID })
+            .then((data) => { updateJobDetails(data.wfID, data.to, testfunc) })
+            .catch((err) => { console.log(err) })
+    }
 }
 
 function updateJobDetails(jobToSave, nextTask, cb) {
-    // wfCallback()
-    jobToSave.update({ current_task: nextTask }, function (err, result) {
-        if (err) {
-            return err
-        }
-        else {
-            execute(jobToSave.jobID, cb)
-        }
-    })
+    let jobIBtoPass;
+    wfJob.findOne({ jobID: jobToSave })
+        .then((data) => {
+            var newPromise = new Promise(function (resolve, reject) {
+                var localData = data;
+                data.update({ current_task: nextTask }, (err, jobSaved) => {
+                    if (err) {
+                        console.log("Error ocurred while saving data " + err)
+                        reject(err)
+                    }
+                    else {
+                        resolve(localData)
+                    }
+                })
+            })
+            newPromise.then((result) => {
+                execute(result.jobID, testfunc)
+            })
+            newPromise.catch((err) => {
+                console.log(err)
+            })
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+
 
 }
 

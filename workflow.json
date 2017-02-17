@@ -34,8 +34,8 @@
             "default": "",
             "isrequired": true
         },
-        "OS": {
-            "name": "OS",
+        "os": {
+            "name": "os",
             "value": "",
             "type": "string",
             "default": "",
@@ -75,8 +75,8 @@
             },
             {
                 "from": "workflow",
-                "fronParameter": "OS",
-                "to": "OS"
+                "fronParameter": "os",
+                "to": "os"
             }
         ],
         "POWERON_VM": [
@@ -120,8 +120,8 @@
                     "value": "",
                     "type": "number"
                 },
-                "OS": {
-                    "name": "OS",
+                "os": {
+                    "name": "os",
                     "value": "",
                     "type": "number"
                 }
