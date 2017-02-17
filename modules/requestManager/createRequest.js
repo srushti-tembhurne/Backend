@@ -64,18 +64,9 @@ function createReq(req, res, next) {
             // process.nextTick(
             //     mapSaveWfParam
             // )
-            setTimeout(mapSaveWfParam, 2000);
+            setTimeout(mapSaveWfParam, 1500);
         }
 
-    }
-
-}
-function reqCallback(err, jobToUpdate) {
-    if (err) {
-        console.log(err)
-    }
-    else {
-        console.log(jobToUpdate)
     }
 
 }
@@ -105,7 +96,7 @@ function verifyAndMapParameters(parameter, paramJson, cb) {
     } else {
         data.push(tempHashData)
         var newReq = new request()
-        newReq.user = parameter.body.username
+        newReq.user = parameter.headers['username'];
         newReq.data = data
         newReq.type = parameter.body["type"]
         newReq.status = "processing"
@@ -122,6 +113,32 @@ function verifyAndMapParameters(parameter, paramJson, cb) {
 
 }
 
+function reqCallback(err, jobToUpdate) {
+    if (err) {
+        console.log(err)
+    }
+    else {
+        console.log("ReqId = " + jobToUpdate.job.reqID)
+
+        // request.findOneAndUpdate(id, jobToUpdate.job.reqID, { status: "complete" })
+        //     .then((result) => { console.log("req Uodated =" + result) })
+        //     .catch((err) => { console.log("error occured = " + err) })
+        request.findOne({ id: jobToUpdate.job.reqID })
+            .then((data) => {
+                data.update({ status: "complete" }, (err, reqsaved) => {
+                    if (err) {
+                        console.log("Error ocurred while saving data " + err)
+                    }
+                    else {
+                        console.log("req Updated" + reqsaved)
+                    }
+                })
+            })
+            .catch((err) => { console.log(err) })
+        // console.log(jobToUpdate)
+    }
+
+}
 
 
 module.exports = createReq

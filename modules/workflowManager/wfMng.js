@@ -21,29 +21,35 @@ function mappParameters(job, callback) {
     let task = job.tasks[currentTask]
 
     if (task.type == 'flow') {
-        // job
-        job.current_task = task.to;
-        updateJobDetails(job, task.to, callback)
+        if (task.name == 'END') {
+            callback(null, { job: job, status: "completed" })
+        }
+        else {
+            updateJobDetails(job, task.to, callback) //to update the current task of WorkFlow
+        }
 
     } else {
-        paramMapper(task, job)
+        paramMapper(task, job, callback) // to map parameters for task
     }
 }
 
 
-function paramMapper(taskRef, jobRef) {
+function paramMapper(taskRef, jobRef, next) {
 
-    let arrayToMap = jobRef.parameter_mappings[jobRef.current_task]
+    let arrayToMap = jobRef.parameter_mappings[jobRef.current_task] // retriving the parameter mapping array
     arrayToMap.some(function (element) {
-        if (element.from == 'workflow') {
+        if (element.from == 'workflow') { // if the parameters are taken from workflow
             taskRef.input_params[element.to].value = jobRef.parameters[element.fronParameter].value
+        } else { //if the parameters are taken from other tasks
+            let fromTask = jobRef.tasks[element.from]
+            taskRef.input_params[element.to].value = fromTask.output_params[element.fronParameter].value
         }
     })
 
-    let returnval = saveTaskinDB(taskRef, jobRef.jobID)
+    saveTaskinDB(taskRef, jobRef, next) //Save Task in DB 
 }
 
-function saveTaskinDB(taskdata, wfID) {
+function saveTaskinDB(taskdata, wfRef, cb) {
     let newTask = new Task()
     newTask.name = taskdata.name
     newTask.module = taskdata.module
@@ -52,11 +58,18 @@ function saveTaskinDB(taskdata, wfID) {
     newTask.created_on = now().format('lll')
     newTask.output_params = taskdata.output_params
     newTask.to = taskdata.to
-    newTask.wfID = wfID
+    newTask.wfID = wfRef.jobID
 
     newTask.save()
-        .then((result) => { console.log('result' + result) })
-        .catch((error) => { console.log('error' + error) })
+        .then((result) => {
+            updateJobDetails(wfRef, taskdata.to, cb)
+            return result;
+        })
+        .catch((error) => {
+            console.log('error' + error)
+            //if error while saving task 
+        })
+
 
 }
 

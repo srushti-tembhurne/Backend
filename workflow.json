@@ -66,6 +66,18 @@
                 "fronParameter": "Memory",
                 "to": "Memory"
             }
+        ],
+        "POWERON_VM": [
+            {
+                "from": "CREATE_VM",
+                "fronParameter": "vmID",
+                "to": "vmid"
+            },
+            {
+                "from": "CREATE_VM",
+                "fronParameter": "vmNode",
+                "to": "vmNode"
+            }
         ]
     },
     "tasks": {
@@ -73,8 +85,9 @@
             "id": "1",
             "name": "CREATE_VM",
             "type": "action",
-            "module": "vm-creator",
+            "module": "create-vm",
             "icon": "",
+            "from": "START",
             "input_params": {
                 "vmName": {
                     "value": "",
@@ -136,14 +149,18 @@
             "name": "POWERON_VM",
             "type": "action",
             "icon": "",
+            "from": "CREATE_VM",
             "module": "vm-poweron",
-            "input_params": [
-                {
-                    "name": "vmid",
+            "input_params": {
+                "vmid": {
+                    "value": "",
+                    "type": "string"
+                },
+                "vmNode": {
                     "value": "",
                     "type": "string"
                 }
-            ],
+            },
             "output_params": [],
             "ok": "3",
             "error": "4",
