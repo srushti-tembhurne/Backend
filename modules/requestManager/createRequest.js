@@ -115,7 +115,18 @@ function verifyAndMapParameters(parameter, paramJson, cb) {
 
 function reqCallback(err, jobToUpdate) {
     if (err) {
-        console.log(err)
+        request.findOne({ id: err })
+            .then((data) => {
+                data.update({ status: "failed" }, (err, reqsaved) => {
+                    if (err) {
+                        console.log("Error ocurred while saving data " + err)
+                    }
+                    else {
+                        console.log("req failed")
+                    }
+                })
+            })
+            .catch((err) => { console.log(err) })
     }
     else {
         request.findOne({ id: jobToUpdate.job.reqID })

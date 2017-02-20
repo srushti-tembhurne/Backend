@@ -27,6 +27,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.0",
     "body-parser": "^1.16.0",
+    "consolidate": "^0.14.5",
     "debug": "^2.6.0",
     "dotenv": "^4.0.0",
     "es6-promisify": "^5.0.0",
@@ -44,6 +45,7 @@
     "mongoose": "^4.8.1",
     "qs": "^6.3.0",
     "request": "^2.79.0",
+    "swig": "^1.4.2",
     "tortoise": "^1.0.1",
     "twitter": "^1.7.0",
     "winston": "^2.3.1"

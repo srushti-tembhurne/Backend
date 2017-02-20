@@ -16,7 +16,7 @@ function execute(wfJobID, reqCB) {
 function getWfJobfromDB(jobIDtosearch, callback) {
     wfJob.findOne({ jobID: jobIDtosearch })
         .then((data) => { mappParameters(data, callback) })
-        .catch((err) => { callback(err) })
+        .catch((err) => { callback(jobIDtosearch) })
 }
 
 function mappParameters(job, callback) {
@@ -73,9 +73,20 @@ function saveTaskinDB(taskdata, wfRef, cb) {
         })
 }
 
-function wfCallback(err, taskID) {
-    if (err) {
-        console.log('Error occured' + err)
+function wfCallback(failedTaskID, taskID) {
+    if (failedTaskID) {
+        // console.log('wf Error occured' + err)
+        Task.findOne({ taskID: failedTaskID })
+            .then((data) => {
+                wfJob.findOne({ jobID: data.wfID }, (err, result) => {
+                    if (err) {
+                        console.log('error while finding wf job')
+                    }
+                    else {
+                        testfunc(result.reqID)
+                    }
+                })
+            })
     }
     else {
         Task.findOne({ taskID: taskID })

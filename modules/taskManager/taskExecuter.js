@@ -27,12 +27,11 @@ function execute(tasks, taskID, cb) {
         parameter[obj] = input_params[obj].value;
     }
     parameter['taskID'] = taskID;
-    console.log(parameter);
+    // console.log(parameter);
     worker.execute(parameter, function (data) {
-        console.log("mere wala function")
         if (data.status == false) {
-            console.log(data);
-            cb(data)
+            // console.log(data);
+            cb(data.taskid)
         }
         var change = {
             output_params: {
@@ -44,10 +43,12 @@ function execute(tasks, taskID, cb) {
         var taskPromise = new Promise(function (resolve, reject) {
             task.update({ taskID: taskID }, change, function (err, data) {
                 if (err) {
-                    return reject(err);
+                    console.log('in task not saved ')
+                    return reject(taskID)
                 } else {
                     if (change.state == 'failed') {
-                        return reject("Error in executing task")
+                        console.log('in task failed ')
+                        return reject(taskID)
                     } else {
                         resolve(taskID);
                     }
@@ -56,9 +57,9 @@ function execute(tasks, taskID, cb) {
                 // mongoose.disconnect();
             });
         })
-        taskPromise.then((updatedTaskID) => { cb(null, updatedTaskID) })
-        taskPromise.catch((err) => { cb(err) })
-        console.log(data);
+            .then((updatedTaskID) => { cb(null, updatedTaskID) })
+            .catch((err) => { console.log(err) })
+        // console.log(data);
     })
 
 }
