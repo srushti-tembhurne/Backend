@@ -44,10 +44,10 @@ function execute(tasks, taskID, cb) {
         var taskPromise = new Promise(function (resolve, reject) {
             task.update({ taskID: taskID }, change, function (err, data) {
                 if (err) {
-                    reject(err);
+                    return reject(err);
                 } else {
-                    if (!change.state) {
-                        reject("Error in executing task")
+                    if (change.state == 'failed') {
+                        return reject("Error in executing task")
                     } else {
                         resolve(taskID);
                     }

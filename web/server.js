@@ -2,8 +2,18 @@ const express = require('express')
   , app = express()
   , bodyParser = require('body-parser')
 const router = require('./router')
+const path = require('path')
 
-app.use(express.static(__dirname + '/public'));
+//Aasim Code for trails
+var cons = require('consolidate');
+
+// view engine setup
+app.engine('html', cons.swig)
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
+//End 
+
+app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
