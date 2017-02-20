@@ -10,8 +10,8 @@ const type = process.env.PROCESS_TYPE
 logger.info(`Starting '${type}' process`, { pid: process.pid })
 
 if (type == 'web') {
-  console.log("in web if");
+ // console.log("in web if");
   require('./web');
 }else{
-  console.log("in else");
+  //console.log("in else");
 }

@@ -23,14 +23,14 @@ var proxmox_config = require('../proxmox_config');
 function createvm(taskObject, callback) {
     createVMObj.vmName = taskObject['vmName'];
     createVMObj.ostype = "other";
-    createVMObj.ide2 = 'local:iso/' + taskObject['os'] + ',media=cdrom' || "";
+    createVMObj.ide2 = 'local:iso/' + taskObject['os'] + ',media=cdrom';
     createVMObj.ide0 = "local:" + taskObject['diskSize'] + ",format=qcow2";
     createVMObj.cores = taskObject['cpuCore'];
     createVMObj.memory = taskObject['Memory'];
     createVMObj.taskid = taskObject['taskID'];
     try {
         net.createConnection(proxmox_config.port, proxmox_config.host).on("connect", function (e) {
-            console.log("192.168.208.130 is pingable ");
+            console.log(proxmox_config.host + " is pingable ");
             var headers, options;
 
             // Set the headers
@@ -107,7 +107,6 @@ var getNextVMIDandNode = function (callback) {
                 if (!error && response.statusCode == 200) {
                     obj = JSON.parse(body);
                 } else {
-                    console.log(error);
                     callback(true);
                     return;
                 }
@@ -138,7 +137,6 @@ var getNextVMIDandNode = function (callback) {
                 if (!error && response.statusCode == 200) {
                     obj = JSON.parse(body);
                 } else {
-                    console.log(response.statusCode);
                     callback(true);
                     return;
                 }
@@ -160,7 +158,6 @@ var getNextVMIDandNode = function (callback) {
             } else {
                 createVMObj.vmid = results[0].data;
                 createVMObj.nodeName = results[1].data[0].node;
-                console.log(JSON.stringify(createVMObj));
 
                 //Create vm
                 if (createVMObj.vmid != '' && createVMObj.nodeName != '') {

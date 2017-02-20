@@ -6,7 +6,7 @@ const logger = require('winston')
 const config = require('../config')
 const DB_conc = require('../DB_conc')
 const app = require('./server')
-console.log("in web index");
+///console.log("in web index");
 process.env.DBconnection = DB_conc.conect();
 const serverListen = promisify(app.listen, app)
 serverListen(config.server.port)

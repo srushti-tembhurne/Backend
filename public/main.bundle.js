@@ -23,8 +23,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = __webpack_require__(1);
-var http_1 = __webpack_require__(235);
-__webpack_require__(269);
+var http_1 = __webpack_require__(236);
+__webpack_require__(270);
 var CommonService = (function () {
     function CommonService(http) {
         this.http = http;
@@ -199,7 +199,7 @@ exports.DataTransferService = DataTransferService;
 
 /***/ },
 
-/***/ 368:
+/***/ 175:
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -222,6 +222,7 @@ var AppComponent = (function () {
         this.router = router;
         this.DT = DT;
         this.showNav = true;
+        this.open = false;
         this.DT.changeEmitted$.subscribe(function (text) {
             _this.InVisible = text.visible;
         });
@@ -233,7 +234,6 @@ var AppComponent = (function () {
     }
     AppComponent.prototype.ngOnInit = function () {
         this.InVisible = false;
-        this.UserName = "User";
     };
     AppComponent.prototype.toggleClass = function () {
         this.showNav = !this.showNav;
@@ -276,7 +276,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = __webpack_require__(1);
-var http_1 = __webpack_require__(235);
+var http_1 = __webpack_require__(236);
 var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
@@ -355,9 +355,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var platform_browser_1 = __webpack_require__(119);
 var core_1 = __webpack_require__(1);
 var forms_1 = __webpack_require__(76);
-var http_1 = __webpack_require__(235);
+var http_1 = __webpack_require__(236);
 var clarity_angular_1 = __webpack_require__(577);
-var app_component_1 = __webpack_require__(368);
+var app_component_1 = __webpack_require__(175);
 var app_routing_1 = __webpack_require__(561);
 var forms_2 = __webpack_require__(76);
 var auth_service_1 = __webpack_require__(369);
@@ -483,14 +483,14 @@ var router_1 = __webpack_require__(49);
 var createVM_model_1 = __webpack_require__(573);
 var data_transfer_service_1 = __webpack_require__(123);
 var common_service_1 = __webpack_require__(122);
+var app_component_1 = __webpack_require__(175);
 var CreateVMComponent = (function () {
-    function CreateVMComponent(_fb, route, DT, CS) {
+    function CreateVMComponent(_fb, route, DT, CS, AC) {
         this._fb = _fb;
         this.route = route;
         this.DT = DT;
         this.CS = CS;
-        this.open = false;
-        this.Result = "Request Saved !!!!";
+        this.AC = AC;
         this.osList = [{ 'name': 'Ubuntu 8', 'Version': 'ubuntu-8.04-desktop-amd64.iso' },
             { 'name': 'Ubuntu 14', 'Version': 'ubuntu-14.04.1-server-amd64.iso' },
             { 'name': 'CentOS 7', 'Version': 'CentOS-7-x86_64-Minimal-1611.iso' },
@@ -504,16 +504,21 @@ var CreateVMComponent = (function () {
             Memory: [''],
             type: 'create-vm'
         });
+        this.DT.sendData({ visible: false });
     }
     CreateVMComponent.prototype.onSubmit = function () {
         var _this = this;
         var model = this.vmcreationForm.value;
         this.formdata = new createVM_model_1.createVMModel(model.vmName, model.OS, model.diskSize, model.cpuCore, model.Memory, model.type);
         this.CS.postService('/api/request', this.formdata).subscribe(function (data) {
-            _this.Res = data;
-            _this.Result = _this.Res["result"];
-            _this.open = true;
-            _this.vmcreationForm.reset();
+            if (data.success) {
+                _this.Res = data;
+                _this.vmcreationForm.reset();
+                _this.AC.modelMsg = _this.Res["result"];
+                _this.AC.open = true;
+            }
+            else {
+            }
         }, function (err) {
             console.log(err);
         }, function () { });
@@ -542,10 +547,10 @@ var CreateVMComponent = (function () {
             // styleUrls: ['../app/styles.css'],
             template: __webpack_require__(746)
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof forms_1.FormBuilder !== 'undefined' && forms_1.FormBuilder) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object, (typeof (_c = typeof data_transfer_service_1.DataTransferService !== 'undefined' && data_transfer_service_1.DataTransferService) === 'function' && _c) || Object, (typeof (_d = typeof common_service_1.CommonService !== 'undefined' && common_service_1.CommonService) === 'function' && _d) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof forms_1.FormBuilder !== 'undefined' && forms_1.FormBuilder) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object, (typeof (_c = typeof data_transfer_service_1.DataTransferService !== 'undefined' && data_transfer_service_1.DataTransferService) === 'function' && _c) || Object, (typeof (_d = typeof common_service_1.CommonService !== 'undefined' && common_service_1.CommonService) === 'function' && _d) || Object, (typeof (_e = typeof app_component_1.AppComponent !== 'undefined' && app_component_1.AppComponent) === 'function' && _e) || Object])
     ], CreateVMComponent);
     return CreateVMComponent;
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
 }());
 exports.CreateVMComponent = CreateVMComponent;
 //# sourceMappingURL=D:/Project/DMF/trunk/src/src/src/app/component/VM/create/createVM.component.js.map
@@ -700,11 +705,13 @@ var core_1 = __webpack_require__(1);
 var data_transfer_service_1 = __webpack_require__(123);
 var router_1 = __webpack_require__(49);
 var common_service_1 = __webpack_require__(122);
+var app_component_1 = __webpack_require__(175);
 var HomeComponent = (function () {
-    function HomeComponent(route, DT, CS) {
+    function HomeComponent(route, DT, CS, AC) {
         this.route = route;
         this.DT = DT;
         this.CS = CS;
+        this.AC = AC;
     }
     HomeComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -712,11 +719,15 @@ var HomeComponent = (function () {
         this.DT.isLoggedIn();
         this.DT.sendData({ visible: false });
         this.CS.getService('/api/request').subscribe(function (data) {
-            _this.Requestdata = data;
-            console.log(_this.Requestdata);
-            _this.Requestdata = Array.of(_this.Requestdata);
-            _this.Requestdata = _this.Requestdata[0].result;
-            _this.count = _this.Requestdata.length;
+            if (data.success) {
+                _this.Requestdata = data;
+                _this.Requestdata = Array.of(_this.Requestdata);
+                _this.Requestdata = _this.Requestdata[0].result;
+                _this.count = _this.Requestdata.length;
+            }
+            else {
+                _this.AC.onlogout();
+            }
         }, function (err) { console.log(err); }, function () { });
     };
     HomeComponent = __decorate([
@@ -724,10 +735,10 @@ var HomeComponent = (function () {
             styles: [__webpack_require__(742)],
             template: __webpack_require__(750)
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _a) || Object, (typeof (_b = typeof data_transfer_service_1.DataTransferService !== 'undefined' && data_transfer_service_1.DataTransferService) === 'function' && _b) || Object, (typeof (_c = typeof common_service_1.CommonService !== 'undefined' && common_service_1.CommonService) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _a) || Object, (typeof (_b = typeof data_transfer_service_1.DataTransferService !== 'undefined' && data_transfer_service_1.DataTransferService) === 'function' && _b) || Object, (typeof (_c = typeof common_service_1.CommonService !== 'undefined' && common_service_1.CommonService) === 'function' && _c) || Object, (typeof (_d = typeof app_component_1.AppComponent !== 'undefined' && app_component_1.AppComponent) === 'function' && _d) || Object])
     ], HomeComponent);
     return HomeComponent;
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
 }());
 exports.HomeComponent = HomeComponent;
 //# sourceMappingURL=D:/Project/DMF/trunk/src/src/src/app/component/home/home.component.js.map
@@ -753,7 +764,8 @@ var forms_1 = __webpack_require__(76);
 var router_1 = __webpack_require__(49);
 var common_service_1 = __webpack_require__(122);
 var data_transfer_service_1 = __webpack_require__(123);
-__webpack_require__(269);
+//import {AppComponent} from '../../app.component';
+__webpack_require__(270);
 var LoginComponent = (function () {
     function LoginComponent(_fb, CS, DT, router) {
         this._fb = _fb;
@@ -821,7 +833,7 @@ var forms_1 = __webpack_require__(76);
 var router_1 = __webpack_require__(49);
 var signup_model_1 = __webpack_require__(574);
 var common_service_1 = __webpack_require__(122);
-__webpack_require__(269);
+__webpack_require__(270);
 var SignupComponent = (function () {
     function SignupComponent(_fb, router, CS) {
         this._fb = _fb;
@@ -928,7 +940,7 @@ exports.UnderConstruction = UnderConstruction;
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-__export(__webpack_require__(368));
+__export(__webpack_require__(175));
 __export(__webpack_require__(560));
 __export(__webpack_require__(562));
 __export(__webpack_require__(369));
@@ -1056,14 +1068,14 @@ module.exports = ".login-wrapper {\n  background: none; }\n  .login-wrapper .log
 /***/ 745:
 /***/ function(module, exports) {
 
-module.exports = "<clr-main-container>\n  <clr-header>\n    <button class=\"navbar-toggler hidden-md-up bars\" type=\"button\" (click)=\"toggleClass();\">&#9776;</button>\n    <div class=\"branding\">\n      <a href=\"#\" class=\"nav-link\">\n        <span class=\"clr-icon clr-clarity-logo\"></span>\n        <span class=\"title\">DCMF</span>\n      </a>\n    </div>\n    <div class=\"header-actions\">\n          <a href=\"#\" [routerLink]=\"['/login']\" [ngClass]=\"{'visible': !InVisible}\">Login </a>\n          <a href=\"#\" [routerLink]=\"['/home']\" [ngClass]=\"{'visible': InVisible}\" >Welcome {{UserName}} </a>\n          <a href=\"#\" [ngClass]=\"{'visible': InVisible}\" class=\"logout\" (click)=\"onlogout()\">Logout</a> \n    </div>\n  </clr-header>\n  \n  <div class=\"content-container\">\n    <div class=\"content-area\">\n      <router-outlet></router-outlet>\n    </div>\n    <nav class=\"sidenav\" [ngClass]=\"{'visible': InVisible,'clr-nav-level-1':showNav}\">\n    <section class=\"sidenav-content\">\n      <a class=\"nav-link\" href=\"#\" [routerLink]=\"['/home']\" [class.active]=\"router.url==='/home' || router.url==='/'\">Home</a>\n      <a class=\"nav-link\" href=\"#\" [routerLink]=\"['/about']\" [class.active]=\"router.url==='/about'\">About</a>\n      <section class=\"nav-group collapsible\">\n        <input id=\"tab2\" type=\"checkbox\">\n        <label for=\"tab2\">VM</label>\n        <ul class=\"nav-list\">\n            <li><a class=\"nav-link\" href=\"#\" [routerLink]=\"['/createVM']\" [class.active]=\"router.url==='/createVM'\">Create VM</a></li>\n            <li><a class=\"nav-link\" routerlinkactive=\"active\"[routerLink]=\"['/monitor']\" [class.active]=\"router.url==='/monitor'\">Monitor</a></li>\n            <li><a class=\"nav-link\" routerlinkactive=\"active\" href=\"#\">Third Link</a></li>\n        </ul>\n      </section>\n    </section>\n  </nav>\n</div>\n</clr-main-container>\n"
+module.exports = "<clr-main-container>\n  <clr-header>\n    <button class=\"navbar-toggler hidden-md-up bars\" type=\"button\" (click)=\"toggleClass();\">&#9776;</button>\n    <div class=\"branding\">\n      <a href=\"#\" class=\"nav-link\">\n        <span class=\"clr-icon clr-clarity-logo\"></span>\n        <span class=\"title\">DCMF</span>\n      </a>\n    </div>\n    <div class=\"header-actions\">\n          <a href=\"#\" [routerLink]=\"['/login']\" [ngClass]=\"{'visible': !InVisible}\">Login </a>\n          <a href=\"#\" [routerLink]=\"['/home']\" [ngClass]=\"{'visible': InVisible}\" >Welcome {{UserName}} </a>\n          <a href=\"#\" [ngClass]=\"{'visible': InVisible}\" class=\"logout\" (click)=\"onlogout()\">Logout</a> \n    </div>\n  </clr-header>\n  \n  <div class=\"content-container\">\n    <div class=\"content-area\">\n      <router-outlet></router-outlet>\n    </div>\n    <nav class=\"sidenav\" [ngClass]=\"{'visible': InVisible,'clr-nav-level-1':showNav}\">\n    <section class=\"sidenav-content\">\n      <a class=\"nav-link\" href=\"#\" [routerLink]=\"['/home']\" [class.active]=\"router.url==='/home' || router.url==='/'\">Home</a>\n      <a class=\"nav-link\" href=\"#\" [routerLink]=\"['/about']\" [class.active]=\"router.url==='/about'\">About</a>\n      <section class=\"nav-group collapsible\">\n        <input id=\"tab2\" type=\"checkbox\">\n        <label for=\"tab2\">VM</label>\n        <ul class=\"nav-list\">\n            <li><a class=\"nav-link\" href=\"#\" [routerLink]=\"['/createVM']\" [class.active]=\"router.url==='/createVM'\">Create VM</a></li>\n            <li><a class=\"nav-link\" routerlinkactive=\"active\"[routerLink]=\"['/monitor']\" [class.active]=\"router.url==='/monitor'\">Monitor</a></li>\n            <li><a class=\"nav-link\" routerlinkactive=\"active\" href=\"#\">Third Link</a></li>\n        </ul>\n      </section>\n    </section>\n  </nav>\n</div>\n</clr-main-container>\n\n<clr-modal [(clrModalOpen)]=\"open\">\n  <h3 class=\"modal-title\">Information </h3>\n  <div class=\"modal-body\">\n    <p>{{modelMsg}}</p>\n  </div>\n  <div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-outline\" (click)=\"open = false\">Cancel</button>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"open = false\">Ok</button>\n  </div>\n</clr-modal>\n"
 
 /***/ },
 
 /***/ 746:
 /***/ function(module, exports) {
 
-module.exports = "<h1>VM Creation Form</h1>\n<form class=\"form\" [formGroup]=\"vmcreationForm\" (ngSubmit)=\"onSubmit(vmcreationForm.value)\" [hidden]=\"submitted\">\n    <section class=\"form-block\">\n        <div class=\"form-group\">\n            <label for=\"vmName\">VM Name</label>\n            <label for=\"vmName\" aria-haspopup=\"true\" role=\"tooltip\" class=\"tooltip tooltip-validation tooltip-md\"\n            [class.invalid]=\"vmcreationForm.get('vmName').invalid\n                    && (vmcreationForm.get('vmName').dirty || vmcreationForm.get('vmName').touched)\">\n                <input type=\"text\" id=\"vmName\"   placeholder=\"Enter VM name\" formControlName=\"vmName\" required>\n                <span class=\"tooltip-content\">\n                    VM Name is Required.\n                </span>\n            </label>\n        </div>\n        <div class=\"form-group\">\n            <label for=\"OS\">Operating System</label>\n            <label for=\"OS\" aria-haspopup=\"true\" role=\"tooltip\" class=\"tooltip tooltip-validation tooltip-md\"\n            [class.invalid]=\"vmcreationForm.get('OS').invalid\n                    && (vmcreationForm.get('OS').dirty || vmcreationForm.get('OS').touched)\">\n               \n                <div class=\"select form-control\">\n                    <select id=\"exampleSelect1\" value=\"osList[0]\" formControlName=\"OS\" >\n                        <option *ngFor=\"let os of osList\" value=\"{{os.Version}}\">{{os.name}}</option>\n                    </select>\n                </div>\n                \n                <span class=\"tooltip-content\">\n                    Operating System Name is Required.\n                </span>\n            </label>\n        </div>   \n        <div class=\"form-group\">\n            <label for=\"diskSize\">Disk Size (GB) </label>\n            <label for=\"diskSize\" aria-haspopup=\"true\" role=\"tooltip\" class=\"tooltip tooltip-validation tooltip-md\"\n            [class.invalid]=\"vmcreationForm.get('diskSize').invalid\n                    && (vmcreationForm.get('diskSize').dirty || vmcreationForm.get('diskSize').touched)\">\n                <input type=\"text\" id=\"diskSize\"  placeholder=\"Enter Disk Size in GBs\" formControlName=\"diskSize\" (keypress)=\"onlyNumberKey($event)\"  required>\n                <span class=\"tooltip-content\">\n                    Disk Size is Required.\n                </span>\n            </label>\n        </div>\n         <div class=\"form-group\">\n            <label for=\"cpuCore\">CPU Core</label>\n            <label for=\"cpuCore\" aria-haspopup=\"true\" role=\"tooltip\" class=\"tooltip tooltip-validation tooltip-md\"\n            [class.invalid]=\"vmcreationForm.get('cpuCore').invalid\n                    && (vmcreationForm.get('cpuCore').dirty || vmcreationForm.get('cpuCore').touched)\">\n              \n           \n            <div class=\"select\">\n                <select id=\"cpuCore\" formControlName=\"cpuCore\">\n                    <option>1</option>\n                    <option>2</option>                    \n                </select>\n            </div>\n       \n                <span class=\"tooltip-content\">\n                    CPU Core is Required.\n                </span>\n            </label>\n        </div>\n          \n        <div class=\"form-group\">\n            <label for=\"Memory\">Memory (MB) </label>\n            <label for=\"Memory\" aria-haspopup=\"true\" role=\"tooltip\" class=\"tooltip tooltip-validation tooltip-md\"\n            [class.invalid]=\"vmcreationForm.get('Memory').invalid\n                    && (vmcreationForm.get('Memory').dirty || vmcreationForm.get('Memory').touched)\">\n                <input type=\"text\" id=\"Memory\"  placeholder=\"Enter Memory \" formControlName=\"Memory\" (keypress)=\"onlyNumberKey($event)\" required>\n                <span class=\"tooltip-content\">\n                    Memory is Required.\n                </span>\n            </label>\n        </div>\n        <div class=\"form-group\">\n            <input type=\"hidden\" id=\"type\" value=\"create-vm\" formControlName=\"type\"/>\n        </div>\n        <button type=\"submit\" class=\"btn btn-primary\" >Create</button>\n        <button type=\"button\" class=\"btn btn-warning\" (click)=\"onCancel()\">Cancel</button>\n    </section>\n</form>\n<clr-modal [(clrModalOpen)]=\"open\">\n  <h3 class=\"modal-title\">Information </h3>\n  <div class=\"modal-body\">\n    <p>{{Result}}</p>\n  </div>\n  <div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-outline\" (click)=\"open = false\">Cancel</button>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"open = false\">Ok</button>\n  </div>\n</clr-modal>\n"
+module.exports = "<h1>VM Creation Form</h1>\n<form class=\"form\" [formGroup]=\"vmcreationForm\" (ngSubmit)=\"onSubmit(vmcreationForm.value)\" [hidden]=\"submitted\">\n    <section class=\"form-block\">\n        <div class=\"form-group\">\n            <label for=\"vmName\">VM Name</label>\n            <label for=\"vmName\" aria-haspopup=\"true\" role=\"tooltip\" class=\"tooltip tooltip-validation tooltip-md\"\n            [class.invalid]=\"vmcreationForm.get('vmName').invalid\n                    && (vmcreationForm.get('vmName').dirty || vmcreationForm.get('vmName').touched)\">\n                <input type=\"text\" id=\"vmName\"   placeholder=\"Enter VM name\" formControlName=\"vmName\" required>\n                <span class=\"tooltip-content\">\n                    VM Name is Required.\n                </span>\n            </label>\n        </div>\n        <div class=\"form-group\">\n            <label for=\"OS\">Operating System</label>\n            <label for=\"OS\" aria-haspopup=\"true\" role=\"tooltip\" class=\"tooltip tooltip-validation tooltip-md\"\n            [class.invalid]=\"vmcreationForm.get('OS').invalid\n                    && (vmcreationForm.get('OS').dirty || vmcreationForm.get('OS').touched)\">\n               \n                <div class=\"select form-control\">\n                    <select id=\"exampleSelect1\" value=\"osList[0]\" formControlName=\"OS\" >\n                        <option *ngFor=\"let os of osList\" value=\"{{os.Version}}\">{{os.name}}</option>\n                    </select>\n                </div>\n                \n                <span class=\"tooltip-content\">\n                    Operating System Name is Required.\n                </span>\n            </label>\n        </div>   \n        <div class=\"form-group\">\n            <label for=\"diskSize\">Disk Size (GB) </label>\n            <label for=\"diskSize\" aria-haspopup=\"true\" role=\"tooltip\" class=\"tooltip tooltip-validation tooltip-md\"\n            [class.invalid]=\"vmcreationForm.get('diskSize').invalid\n                    && (vmcreationForm.get('diskSize').dirty || vmcreationForm.get('diskSize').touched)\">\n                <input type=\"text\" id=\"diskSize\"  placeholder=\"Enter Disk Size in GBs\" formControlName=\"diskSize\" (keypress)=\"onlyNumberKey($event)\"  required>\n                <span class=\"tooltip-content\">\n                    Disk Size is Required.\n                </span>\n            </label>\n        </div>\n         <div class=\"form-group\">\n            <label for=\"cpuCore\">CPU Core</label>\n            <label for=\"cpuCore\" aria-haspopup=\"true\" role=\"tooltip\" class=\"tooltip tooltip-validation tooltip-md\"\n            [class.invalid]=\"vmcreationForm.get('cpuCore').invalid\n                    && (vmcreationForm.get('cpuCore').dirty || vmcreationForm.get('cpuCore').touched)\">\n              \n           \n            <div class=\"select\">\n                <select id=\"cpuCore\" formControlName=\"cpuCore\">\n                    <option>1</option>\n                    <option>2</option>                    \n                </select>\n            </div>\n       \n                <span class=\"tooltip-content\">\n                    CPU Core is Required.\n                </span>\n            </label>\n        </div>\n          \n        <div class=\"form-group\">\n            <label for=\"Memory\">Memory (MB) </label>\n            <label for=\"Memory\" aria-haspopup=\"true\" role=\"tooltip\" class=\"tooltip tooltip-validation tooltip-md\"\n            [class.invalid]=\"vmcreationForm.get('Memory').invalid\n                    && (vmcreationForm.get('Memory').dirty || vmcreationForm.get('Memory').touched)\">\n                <input type=\"text\" id=\"Memory\"  placeholder=\"Enter Memory \" formControlName=\"Memory\" (keypress)=\"onlyNumberKey($event)\" required>\n                <span class=\"tooltip-content\">\n                    Memory is Required.\n                </span>\n            </label>\n        </div>\n        <div class=\"form-group\">\n            <input type=\"hidden\" id=\"type\" value=\"create-vm\" formControlName=\"type\"/>\n        </div>\n        <button type=\"submit\" class=\"btn btn-primary\" >Create</button>\n        <button type=\"button\" class=\"btn btn-warning\" (click)=\"onCancel()\">Cancel</button>\n    </section>\n</form>\n\n"
 
 /***/ },
 
@@ -1091,7 +1103,7 @@ module.exports = "<div class=\"forgotpw\">\n    <p>Enter your email address to g
 /***/ 750:
 /***/ function(module, exports) {
 
-module.exports = "<!--\n  ~ Copyright (c) 2016 VMware, Inc. All Rights Reserved.\n  ~ This software is released under MIT license.\n  ~ The full license information can be found in LICENSE in the root directory of this project.\n  -->\n\n<!--<clr-stack-view>\n    <clr-stack-header>List of Requests</clr-stack-header>\n    <clr-stack-block *ngFor=\"let re of Requestdata;let i = index\">\n        <clr-stack-label>Request ID - {{re.id}}</clr-stack-label>\n        <clr-stack-label>Request Type - {{re.type}}</clr-stack-label>\n        <clr-stack-label>Request Status - {{re.status}}</clr-stack-label>\n        <clr-stack-block>\n            <clr-stack-label>Memory</clr-stack-label>\n            <clr-stack-content>{{re.data[0].Memory}}</clr-stack-content>\n        </clr-stack-block>\n        <clr-stack-block>\n            <clr-stack-label>cpuCore</clr-stack-label>\n            <clr-stack-content>{{re.data[0].cpuCore}}</clr-stack-content>\n        </clr-stack-block>\n        <clr-stack-block>\n            <clr-stack-label>diskSize</clr-stack-label>\n            <clr-stack-content>{{re.data[0].diskSize}}</clr-stack-content>\n        </clr-stack-block>\n        <clr-stack-block>\n            <clr-stack-label>vmName</clr-stack-label>\n            <clr-stack-content>{{re.data[0].vmName}}</clr-stack-content>\n        </clr-stack-block>\n    </clr-stack-block>\n</clr-stack-view> -->\n<h1> List of Requests</h1>\n<pagination-controls (pageChange)=\"p = $event\" *ngIf=\"count>5\"></pagination-controls>\n<table class=\"table\">\n    <thead>\n        <tr>\n            <th>ID</th>\n            <th>vmName</th>\n            <th>Type</th>\n            <th>Memory</th>\n            <th>cpuCore</th>\n            <th>diskSize</th>\n            <th>Status</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr *ngFor=\"let re of Requestdata | paginate: { itemsPerPage: 5, currentPage: p }\">\n            <td>{{re.id}}</td>\n            <td>{{re.data[0].vmName}}</td>\n            <td>{{re.type}}</td>\n            <td>{{re.data[0].Memory}}</td>\n            <td>{{re.data[0].cpuCore}}</td>\n            <td>{{re.data[0].diskSize}}</td>\n            <td>{{re.status}}</td>\n        </tr>\n        <tr *ngIf=\"count==0\">\n            <td colspan=\"7\">No data found</td>\n        </tr>\n    </tbody>\n</table>\n"
+module.exports = "<!--\n  ~ Copyright (c) 2016 VMware, Inc. All Rights Reserved.\n  ~ This software is released under MIT license.\n  ~ The full license information can be found in LICENSE in the root directory of this project.\n  -->\n\n<!--<clr-stack-view>\n    <clr-stack-header>List of Requests</clr-stack-header>\n    <clr-stack-block *ngFor=\"let re of Requestdata;let i = index\">\n        <clr-stack-label>Request ID - {{re.id}}</clr-stack-label>\n        <clr-stack-label>Request Type - {{re.type}}</clr-stack-label>\n        <clr-stack-label>Request Status - {{re.status}}</clr-stack-label>\n        <clr-stack-block>\n            <clr-stack-label>Memory</clr-stack-label>\n            <clr-stack-content>{{re.data[0].Memory}}</clr-stack-content>\n        </clr-stack-block>\n        <clr-stack-block>\n            <clr-stack-label>cpuCore</clr-stack-label>\n            <clr-stack-content>{{re.data[0].cpuCore}}</clr-stack-content>\n        </clr-stack-block>\n        <clr-stack-block>\n            <clr-stack-label>diskSize</clr-stack-label>\n            <clr-stack-content>{{re.data[0].diskSize}}</clr-stack-content>\n        </clr-stack-block>\n        <clr-stack-block>\n            <clr-stack-label>vmName</clr-stack-label>\n            <clr-stack-content>{{re.data[0].vmName}}</clr-stack-content>\n        </clr-stack-block>\n    </clr-stack-block>\n</clr-stack-view> -->\n<h1> List of Requests</h1>\n<pagination-controls (pageChange)=\"p = $event\" *ngIf=\"count>10\"></pagination-controls>\n<table class=\"table\">\n    <thead>\n        <tr>\n            <th>ID</th>\n            <th>vmName</th>\n            <th>Type</th>\n            <th>Memory</th>\n            <th>cpuCore</th>\n            <th>diskSize</th>\n            <th>Status</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr *ngFor=\"let re of Requestdata | paginate: { itemsPerPage: 10, currentPage: p }\">\n            <td>{{re.id}}</td>\n            <td>{{re.data[0].vmName}}</td>\n            <td>{{re.type}}</td>\n            <td>{{re.data[0].Memory}}</td>\n            <td>{{re.data[0].cpuCore}}</td>\n            <td>{{re.data[0].diskSize}}</td>\n            <td>{{re.status}}</td>\n        </tr>\n        <tr *ngIf=\"count==0\">\n            <td colspan=\"7\">No data found</td>\n        </tr>\n    </tbody>\n</table>\n"
 
 /***/ },
 
