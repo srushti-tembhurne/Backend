@@ -1,6 +1,6 @@
 webpackJsonp([2,4],{
 
-/***/ 1020:
+/***/ 1021:
 /***/ function(module, exports, __webpack_require__) {
 
 __webpack_require__(444);
@@ -326,7 +326,7 @@ function updateLink(linkElement, obj) {
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(728);
+var content = __webpack_require__(729);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(283)(content, {});
@@ -353,7 +353,7 @@ if(false) {
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(729);
+var content = __webpack_require__(730);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(283)(content, {});
@@ -380,7 +380,7 @@ if(false) {
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(730);
+var content = __webpack_require__(731);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(283)(content, {});
@@ -401,7 +401,7 @@ if(false) {
 
 /***/ },
 
-/***/ 728:
+/***/ 729:
 /***/ function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(268)();
@@ -416,7 +416,7 @@ exports.push([module.i, "/*!\n * Clarity v0.8.7 | MIT license | https://github.c
 
 /***/ },
 
-/***/ 729:
+/***/ 730:
 /***/ function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(268)();
@@ -431,7 +431,7 @@ exports.push([module.i, "/*!\n * Copyright (c) 2016 VMware, Inc. All Rights Rese
 
 /***/ },
 
-/***/ 730:
+/***/ 731:
 /***/ function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(268)();
@@ -446,5 +446,5 @@ exports.push([module.i, ".ng2-pagination{\n        float:right;\n    }\n", ""]);
 
 /***/ }
 
-},[1020]);
+},[1021]);
 //# sourceMappingURL=styles.bundle.map
