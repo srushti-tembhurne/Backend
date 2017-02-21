@@ -23,7 +23,7 @@ var proxmox_config = require('../proxmox_config');
 function createvm(taskObject, callback) {
     createVMObj.vmName = taskObject['vmName'];
     createVMObj.ostype = "other";
-    createVMObj.ide2 = 'local:iso/' + taskObject['os'] + ',media=cdrom';
+    createVMObj.ide2 = 'local:iso/' + taskObject['OS'] + ',media=cdrom';
     createVMObj.ide0 = "local:" + taskObject['diskSize'] + ",format=qcow2";
     createVMObj.cores = taskObject['cpuCore'];
     createVMObj.memory = taskObject['Memory'];
