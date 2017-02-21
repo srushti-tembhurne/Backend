@@ -502,7 +502,7 @@ var CreateVMComponent = (function () {
             diskSize: [''],
             cpuCore: ['1'],
             Memory: [''],
-            type: 'create-vm'
+            type: ['create-vm', []]
         });
         this.DT.sendData({ visible: false });
     }
@@ -513,7 +513,7 @@ var CreateVMComponent = (function () {
         this.CS.postService('/api/request', this.formdata).subscribe(function (data) {
             if (data.success) {
                 _this.Res = data;
-                _this.vmcreationForm.reset();
+                _this.vmcreationForm.reset({ vmName: '', OS: '', diskSize: '', cpuCore: '', Memory: '', type: 'create-vm' });
                 _this.AC.modelMsg = _this.Res["result"];
                 _this.AC.open = true;
             }
