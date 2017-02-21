@@ -136,7 +136,7 @@ function reqCallback(err, jobToUpdate) {
                         console.log("Error ocurred while saving data " + err)
                     }
                     else {
-                        console.log("req Updated" + reqsaved)
+                       // console.log("req Updated" + reqsaved)
                     }
                 })
             })

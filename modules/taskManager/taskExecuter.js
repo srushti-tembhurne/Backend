@@ -11,7 +11,6 @@ function getTask(taskID, callback) {
 
     task.findOne({ taskID: taskID }, function (err, data) {
         if (data != null) {
-            console.log(data);
             execute(data, taskID, callback);
         } else {
             console.log("Error in task")

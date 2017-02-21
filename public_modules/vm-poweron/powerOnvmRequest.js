@@ -13,18 +13,13 @@ var proxmoxLoginDetails = {};
 var vmObj = {};
 var proxmox_config = require('../proxmox_config');
 
-function genericCallback(message) {
-    console.log(message);
-    return message;
-}
-
 function poweronvm(taskObject, callback) {
     vmObj.nodeName = taskObject['vmNode']
     vmObj.vmid = taskObject['vmid']
     vmObj.taskid = taskObject['taskID']
     try {
         net.createConnection(proxmox_config.port, proxmox_config.host).on("connect", function (e) {
-            console.log("192.168.208.130 is pingable ");
+            console.log(proxmox_config.host + " is pingable ");
             var headers, options;
 
             // Set the headers
@@ -48,7 +43,6 @@ function poweronvm(taskObject, callback) {
                     var _response = JSON.parse(body);
                     proxmoxLoginDetails.CSRFPreventionToken = _response.data.CSRFPreventionToken;
                     proxmoxLoginDetails.ticket = _response.data.ticket;
-                    //poweron(genericCallback);
                     poweron(callback);
                 } else {
                     var data = {};
