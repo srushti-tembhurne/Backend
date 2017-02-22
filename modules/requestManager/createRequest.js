@@ -115,9 +115,13 @@ function verifyAndMapParameters(parameter, paramJson, cb) {
 
 function reqCallback(err, jobToUpdate) {
     if (err) {
-        request.findOne({ id: err })
+        request.findOne({ id: err.reqID })
             .then((data) => {
-                data.update({ status: "failed" }, (err, reqsaved) => {
+                var dataToUpdate = {
+                    status: "failed",
+                    msg: err.errMsg
+                }
+                data.update(dataToUpdate, (err, reqsaved) => {
                     if (err) {
                         console.log("Error ocurred while saving data " + err)
                     }
@@ -136,7 +140,7 @@ function reqCallback(err, jobToUpdate) {
                         console.log("Error ocurred while saving data " + err)
                     }
                     else {
-                       // console.log("req Updated" + reqsaved)
+                        // console.log("req Updated" + reqsaved)
                     }
                 })
             })

@@ -73,17 +73,17 @@ function saveTaskinDB(taskdata, wfRef, cb) {
         })
 }
 
-function wfCallback(failedTaskID, taskID) {
-    if (failedTaskID) {
+function wfCallback(err, taskID) {
+    if (err) {
         // console.log('wf Error occured' + err)
-        Task.findOne({ taskID: failedTaskID })
+        Task.findOne({ taskID: err.taskId })
             .then((data) => {
-                wfJob.findOne({ jobID: data.wfID }, (err, result) => {
-                    if (err) {
+                wfJob.findOne({ jobID: data.wfID }, (error, result) => {
+                    if (error) {
                         console.log('error while finding wf job')
                     }
                     else {
-                        testfunc(result.reqID)
+                        testfunc({ reqID: result.reqID, errMsg: err.errMsg })
                     }
                 })
             })

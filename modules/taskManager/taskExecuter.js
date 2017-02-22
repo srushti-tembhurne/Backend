@@ -30,7 +30,7 @@ function execute(tasks, taskID, cb) {
     worker.execute(parameter, function (data) {
         if (data.status == false) {
             // console.log(data);
-            cb(data.taskid)
+            cb({ taskId: data.taskid, errMsg: data.StatusMessage })
         }
         var change = {
             output_params: {

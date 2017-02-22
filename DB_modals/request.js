@@ -11,6 +11,7 @@ var reqSchema = new mongoose.Schema({
     jobID: { type: String },
     user: String,
     data: [],
+    msg: { type: String },
     type: { type: String, required: true },
     status: { type: String },
     wfID: { type: Number }
