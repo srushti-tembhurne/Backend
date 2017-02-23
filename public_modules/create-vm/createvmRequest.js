@@ -1,18 +1,8 @@
 "use strict";
 
 const net = require("net"),
-    express = require('express'),
-    bodyParser = require('body-parser'),
     request = require('request'),
-    fs = require('fs'),
-    https = require('https'),
-    async = require('async'),
-    promisify = require('es6-promisify');
-
-var app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+    async = require('async');
 
 var proxmoxLoginDetails = {};
 var createVMObj = {};
