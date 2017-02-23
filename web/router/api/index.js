@@ -1,6 +1,6 @@
 'use strict'
 
-const login = require('./login')
+const login = require('./session')
 const userReq = require('./reqHandler')
 
 module.exports = {
