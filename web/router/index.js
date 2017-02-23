@@ -6,7 +6,7 @@ const middleware = require('./../middleware')
 
 
 router.post('/api/login', api.login.login)
-router.post('/api/logout', api.login.logout)
+router.get('/api/logout', api.login.logout)
 router.post('/api/request', middleware.validate, api.userReq.handle)
 router.get('/api/request', middleware.validate, api.userReq.getRequest)
 
